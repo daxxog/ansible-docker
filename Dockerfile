@@ -57,3 +57,9 @@ RUN cd /root/.zplug && tar xzvf jeffreytse_zsh-vi-mode.tar.gz
 
 # copy over .zshrc
 COPY .zshrc .
+
+# main working directory
+WORKDIR /usr/src
+
+# entrypoint
+ENTRYPOINT ["/bin/zsh"]
