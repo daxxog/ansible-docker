@@ -61,5 +61,5 @@ COPY .zshrc .
 # main working directory
 WORKDIR /usr/src
 
-# entrypoint
-ENTRYPOINT ["/bin/zsh"]
+# run playbooks as entrypoint
+ENTRYPOINT ["/usr/bin/ansible-playbook"]
