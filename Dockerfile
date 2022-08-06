@@ -29,6 +29,12 @@ ENV PATH=/usr/games:$PATH
 # symlink batcat to bat
 RUN ln -s /usr/bin/batcat /usr/bin/bat
 
+# install cloudflared
+ENV CLOUDFLARED_VERSION=2022.7.1
+RUN curl -Ls https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-amd64 \
+           > /usr/local/bin/cloudflared && \
+    chmod +x /usr/local/bin/cloudflared
+
 # install ansible
 # https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-debian
 RUN echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu focal main" | \
