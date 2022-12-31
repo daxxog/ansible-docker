@@ -69,5 +69,6 @@ zplug load
 # ZPLUG
 #######
 
+alias :q='exit'
 
 neofetch | lolcat
