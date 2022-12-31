@@ -5,9 +5,11 @@ ENV DEBIAN_FRONTEND="noninteractive"
 # fix "September 30th problem"
 # https://github.com/nodesource/distributions/issues/1266#issuecomment-931597235
 RUN apt update; apt install -y ca-certificates && \
-    apt update;
-RUN apt install apt-utils -y
-RUN apt upgrade -y
+    apt update; \
+    apt install apt-utils -y \
+    && apt upgrade -y \
+    && rm -rf /var/lib/apt/lists/* \
+;
 
 # install the necessary things
 RUN apt install -y \
@@ -21,6 +23,7 @@ RUN apt install -y \
     cowsay \
     bat \
     exa \
+    && rm -rf /var/lib/apt/lists/* \
 ;
 
 # add /usr/games to the path so we can use lolcat and cowsay
@@ -41,8 +44,9 @@ RUN echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu focal main" | \
     tee /etc/apt/sources.list.d/ansible.list && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367 && \
     apt update \
+    && apt install ansible -y \
+    && rm -rf /var/lib/apt/lists/* \
 ;
-RUN apt install ansible -y
 
 # change working directory to root user's home directory
 WORKDIR /root
