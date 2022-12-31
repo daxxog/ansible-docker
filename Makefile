@@ -45,3 +45,13 @@ docker-shell: docker-build
 		-t \
 		--entrypoint /bin/zsh \
 		docker.io/daxxog/ansible:latest-$$(uname -m)
+
+
+.PHONY: release
+release: version-bump
+	$(MAKE) docker-push
+	git add BUILD_NUMBER
+	git commit -m "built ansible-docker@$$(cat BUILD_NUMBER)"
+	git push
+	git tag -a "$$(cat BUILD_NUMBER)" -m "tagging build number $$(cat BUILD_NUMBER)"
+	git push origin $$(cat BUILD_NUMBER)
