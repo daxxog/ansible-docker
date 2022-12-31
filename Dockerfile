@@ -30,7 +30,7 @@ ENV PATH=/usr/games:$PATH
 RUN ln -s /usr/bin/batcat /usr/bin/bat
 
 # install cloudflared
-ENV CLOUDFLARED_VERSION=2022.7.1
+ENV CLOUDFLARED_VERSION=2022.12.1
 RUN curl -Ls https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-amd64 \
            > /usr/local/bin/cloudflared && \
     chmod +x /usr/local/bin/cloudflared
