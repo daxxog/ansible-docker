@@ -53,5 +53,5 @@ release: version-bump
 	git add BUILD_NUMBER
 	git commit -m "built ansible-docker@$$(cat BUILD_NUMBER)"
 	git push
-	git tag -a "$$(cat BUILD_NUMBER)" -m "tagging build number $$(cat BUILD_NUMBER)"
-	git push origin $$(cat BUILD_NUMBER)
+	git tag -a "build-$$(cat BUILD_NUMBER)" -m "tagging build number $$(cat BUILD_NUMBER)"
+	git push origin "build-$$(cat BUILD_NUMBER)"
