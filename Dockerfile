@@ -12,7 +12,8 @@ RUN apt update; apt install -y ca-certificates && \
 ;
 
 # install the necessary things
-RUN apt install -y \
+RUN apt-get update && apt-get install -y \
+    locales \
     git \
     curl \
     zsh \
@@ -25,6 +26,13 @@ RUN apt install -y \
     exa \
     && rm -rf /var/lib/apt/lists/* \
 ;
+
+# use UTF-8 locale
+RUN touch /usr/share/locale/locale.alias \
+    && sed -i 's/# \(en_US\.UTF-8 .*\)/\1/' /etc/locale.gen \
+    && locale-gen \
+;
+ENV LANG=en_US.UTF-8 \ LANGUAGE=en_US \ LC_ALL=en_US.UTF-8
 
 # add /usr/games to the path so we can use lolcat and cowsay
 ENV PATH=/usr/games:$PATH
