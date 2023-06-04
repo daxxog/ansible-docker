@@ -1,57 +1,52 @@
 SHELL := /bin/bash
 
+
 .PHONY: help
 help:
-	@echo "available targets -->\n"
+	@printf "available targets -->\n\n"
 	@cat Makefile | grep ".PHONY" | grep -v ".PHONY: _" | sed 's/.PHONY: //g'
 
 
-.PHONY: docker-build
-docker-build:
-	docker build . -t docker.io/daxxog/ansible:latest-$$(uname -m)
-
-
-.PHONY: docker-tag
-docker-tag: docker-build _need-build-number
-	docker tag docker.io/daxxog/ansible:latest-$$(uname -m) docker.io/daxxog/ansible:$$(cat BUILD_NUMBER)-$$(uname -m)
-	@echo docker tag docker.io/daxxog/ansible:latest-$$(uname -m) docker.io/daxxog/ansible:$$(cat BUILD_NUMBER)-$$(uname -m)
-
-
-.PHONY: _need-build-number
-_need-build-number:
-	if [ ! -f BUILD_NUMBER ]; then \
-		make version-bump; \
+env:
+	python3 -m venv env
+	if [ -f requirements.txt ]; then \
+		bash -c 'source env/bin/activate && set -x && python3 -m pip install -r requirements.txt'; \
 	fi
 
 
-.PHONY: version-bump
-version-bump:
-	dc --version
-	touch BUILD_NUMBER
-	echo "$$(cat BUILD_NUMBER) 1 + p" | dc | tee _BUILD_NUMBER
-	mv _BUILD_NUMBER BUILD_NUMBER
+requirements.in:
+	echo "pip-tools" > requirements.in
+	echo "zest.releaser" >> requirements.in
+	if git status requirements.in | grep -q requirements.in; then \
+		git add requirements.in; \
+		git commit -m 'new file:   requirements.in'; \
+	fi
 
 
-.PHONY: docker-push
-docker-push: docker-tag
-	docker push docker.io/daxxog/ansible:$$(cat BUILD_NUMBER)-$$(uname -m)
-	docker push docker.io/daxxog/ansible:latest-$$(uname -m)
+requirements.txt: requirements.in env
+	bash -c 'source env/bin/activate && set -x && python3 -m pip install -r requirements.in && pip-compile --generate-hashes --resolver=backtracking'
+	if git status requirements.txt | grep -q requirements.txt; then \
+		git add requirements.txt; \
+		git commit -m 'generated:   requirements.txt'; \
+	fi
 
 
-.PHONY: docker-shell
-docker-shell: docker-build
-	docker run \
-		-i \
-		-t \
-		--entrypoint /bin/zsh \
-		docker.io/daxxog/ansible:latest-$$(uname -m)
+CHANGES.md:
+	if [ ! -f CHANGES.md ]; then \
+		touch CHANGES.md; \
+		git add CHANGES.md; \
+		git commit -m 'new file:   CHANGES.md'; \
+	fi
+
+
+VERSION:
+	if [ ! -f VERSION ]; then \
+		echo "0.0.1" > VERSION; \
+		git add VERSION; \
+		git commit -m 'new file:   VERSION'; \
+	fi
 
 
 .PHONY: release
-release: version-bump
-	$(MAKE) docker-push
-	git add BUILD_NUMBER
-	git commit -m "built ansible-docker@$$(cat BUILD_NUMBER)"
-	git push
-	git tag -a "build-$$(cat BUILD_NUMBER)" -m "tagging build number $$(cat BUILD_NUMBER)"
-	git push origin "build-$$(cat BUILD_NUMBER)"
+release: env CHANGES.md VERSION requirements.txt
+	bash -c 'source env/bin/activate && set -x && fullrelease'
