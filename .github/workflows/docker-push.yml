@@ -25,7 +25,7 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           GITHUB_REF: ${{ github.ref }}
-          DOCKERHUB_LOCATION: docker.io/${{ github.repository }}
+          DOCKERHUB_LOCATION: docker.io/daxxog/ansible
         if: ${{ github.repository_owner == github.actor }}
         run: |
           echo $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USERNAME --password-stdin
