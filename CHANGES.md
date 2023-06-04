@@ -1,4 +1,4 @@
-## 3.0.2 (unreleased)
+## 3.0.2 (2023-06-04)
 
 
 - Push to proper docker hub location.
