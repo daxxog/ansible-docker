@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     locales \
     git \
     curl \
+    rsync \
     zsh \
     neovim \
     python3-pip \
