@@ -1,7 +1,7 @@
 ## 3.0.3 (unreleased)
 
 
-- Nothing changed yet.
+- Added `rsync`.
 
 
 ## 3.0.2 (2023-06-04)
